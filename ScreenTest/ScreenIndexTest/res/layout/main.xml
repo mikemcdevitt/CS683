@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="fill_parent" android:layout_height="wrap_content">
+    <TextView android:id="@+id/testID" android:layout_width="fill_parent" android:layout_height="fill_parent" />
+    <LinearLayout android:id="@+id/linearLayout1" android:layout_width="match_parent" android:weightSum="1" android:layout_weight="1" android:layout_height="0dp">
+    <TextView  
+    android:layout_height="wrap_content" 
+    android:text="@string/xIndexLabel" android:layout_weight="0.25" android:layout_width="0dp"/>
+    <TextView android:id="@+id/xIndex"
+    android:layout_height="wrap_content" 
+    android:text="@string/xIndex" android:layout_weight="0.25" android:layout_width="0dp"/>
+    <TextView  
+    android:layout_height="wrap_content" 
+    android:text="@string/yIndexLabel" android:layout_weight="0.25" android:layout_width="0dp"/>
+    <TextView android:id="@+id/yIndex"
+    android:layout_height="wrap_content" 
+    android:text="@string/yIndex" android:layout_weight="0.25" android:layout_width="0dp"/>
+    </LinearLayout>
+</LinearLayout>
