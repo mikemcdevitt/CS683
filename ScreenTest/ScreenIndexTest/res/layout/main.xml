@@ -17,4 +17,24 @@
     android:layout_height="wrap_content" 
     android:text="@string/yIndex" android:layout_weight="0.25" android:layout_width="0dp"/>
     </LinearLayout>
+    <LinearLayout android:id="@+id/RotationLayout" android:layout_width="match_parent" android:weightSum="1" android:layout_weight="1" android:layout_height="0dp">
+    <TextView  
+    android:layout_height="wrap_content" 
+    android:text="@string/pitchIndexLabel" android:layout_weight="0.167" android:layout_width="0dp"/>
+    <TextView android:id="@+id/pitchIndex"
+    android:layout_height="wrap_content" 
+    android:text="@string/pitchIndex" android:layout_weight="0.167" android:layout_width="0dp"/>
+    <TextView  
+    android:layout_height="wrap_content" 
+    android:text="@string/rollIndexLabel" android:layout_weight="0.167" android:layout_width="0dp"/>
+    <TextView android:id="@+id/rollIndex"
+    android:layout_height="wrap_content" 
+    android:text="@string/rollIndex" android:layout_weight="0.167" android:layout_width="0dp"/>
+    <TextView  
+    android:layout_height="wrap_content" 
+    android:text="@string/yawIndexLabel" android:layout_weight="0.167" android:layout_width="0dp"/>
+    <TextView android:id="@+id/yawIndex"
+    android:layout_height="wrap_content" 
+    android:text="@string/yawIndex" android:layout_weight="0.167" android:layout_width="0dp"/>
+    </LinearLayout>
 </LinearLayout>
