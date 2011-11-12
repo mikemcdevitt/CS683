@@ -1,9 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">ScreenIndexTest</string>
-    <string name="screenIndices">Screen Indices</string><string name="xIndexLabel">x Index</string>
-    <string name="xIndex">0</string><string name="yIndexLabel">y Index</string>
-    
+    <string name="screenIndices">Screen Indices</string>
+    <string name="xIndexLabel">x Index</string>
+    <string name="xIndex">0</string>
+    <string name="yIndexLabel">y Index</string>
     <string name="yIndex">0</string>
+    <string name="rotationIndices">Rotation Indices</string>
+    <string name="pitchIndexLabel">Pitch Index</string>
+    <string name="pitchIndex">0</string>
+    <string name="rollIndexLabel">Roll Index</string>
+    <string name="rollIndex">0</string>
+    <string name="yawIndexLabel">Yaw Index</string>
+    <string name="yawIndex">0</string>
     
 </resources>

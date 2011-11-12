@@ -24,10 +24,17 @@ public final class R {
     }
     public static final class string {
         public static final int app_name=0x7f040000;
+        public static final int pitchIndex=0x7f040008;
+        public static final int pitchIndexLabel=0x7f040007;
+        public static final int rollIndex=0x7f04000a;
+        public static final int rollIndexLabel=0x7f040009;
+        public static final int rotationIndices=0x7f040006;
         public static final int screenIndices=0x7f040001;
         public static final int xIndex=0x7f040003;
         public static final int xIndexLabel=0x7f040002;
         public static final int yIndex=0x7f040005;
         public static final int yIndexLabel=0x7f040004;
+        public static final int yawIndex=0x7f04000c;
+        public static final int yawIndexLabel=0x7f04000b;
     }
 }
