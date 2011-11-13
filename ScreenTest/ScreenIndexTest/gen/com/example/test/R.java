@@ -28,6 +28,7 @@ public final class R {
     }
     public static final class string {
         public static final int app_name=0x7f040000;
+        public static final int frequency=0x7f04000d;
         public static final int pitchIndex=0x7f040008;
         public static final int pitchIndexLabel=0x7f040007;
         public static final int rollIndex=0x7f04000a;

@@ -14,4 +14,5 @@
     <string name="yawIndexLabel">Yaw Index</string>
     <string name="yawIndex">0</string>
     
+    <string name="frequency">440</string>
 </resources>
