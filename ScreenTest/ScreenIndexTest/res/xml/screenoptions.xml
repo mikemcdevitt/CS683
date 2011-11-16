@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- This file is /res/xml/screenoptions.xml -->
+
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+	android:key="min_max_preference"
+	android:title="@string/prefTitle"
+	android:summary="@string/prefSummary">
+	
+	<ListPreference android:key="@string/start_list"
+            android:title="@string/listTitle"
+            android:summary="@string/listSummary"
+            android:entries="@array/start_list_options"
+            android:entryValues="@array/start_list_options_values"
+            android:dialogTitle="@string/dialogTitle" 
+            android:defaultValue="@string/default_start_value_preference"
+            />
+</PreferenceScreen>
