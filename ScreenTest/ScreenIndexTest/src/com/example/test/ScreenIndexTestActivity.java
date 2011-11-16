@@ -15,6 +15,7 @@ import android.media.AudioTrack;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.view.Display;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -28,18 +29,16 @@ public class ScreenIndexTestActivity extends Activity {
     private Resources resources;
     float x = 0;
     float y = 0;
-	private static final float width = 30;
-	private static final float height = 30;
 	private int baseFreqIndex;
 	double freq;
 	AudioSynthesisTask audioSynth;
 	boolean keepGoing = false;
-	
-	/** Called when the activity is first created. */
+
+    
+    /** Called when the activity is first created. */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        
         
         //setContentView(R.layout.main);
         this.cv = new CircleView(this, x,y);
@@ -93,12 +92,17 @@ public class ScreenIndexTestActivity extends Activity {
     	x = e.getX();
         y = e.getY();
         
-
+        int width;
+    	int height;
+    	
+        Display d = getWindowManager().getDefaultDisplay(); 
+        width = d.getWidth();           // gets maximum x value (1280 on galaxy tab)
+        height = d.getHeight();          // gets maximum y value (800 on galaxy tab)
         
+        double x_fraction = x/width;
+    	
         double f_start = 27.5 * Math.pow(2,baseFreqIndex);
         double f_final = f_start * 2;
-        
-        double x_fraction = x/1280.0;
         
         freq = f_start + x_fraction*(f_final - f_start);
        
