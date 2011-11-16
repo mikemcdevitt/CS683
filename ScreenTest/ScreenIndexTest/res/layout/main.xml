@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
-    android:layout_width="fill_parent" android:layout_height="wrap_content">
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical" >
+
     <TextView android:id="@+id/testID" android:layout_width="fill_parent" android:layout_height="fill_parent" />
     <LinearLayout android:id="@+id/linearLayout1" android:layout_width="match_parent" android:weightSum="1" android:layout_weight="1" android:layout_height="0dp">
     <TextView  
@@ -24,7 +26,7 @@
     <TextView android:id="@+id/pitchIndex"
     android:layout_height="wrap_content" 
     android:text="@string/pitchIndex" android:layout_weight="0.167" android:layout_width="0dp"/>
-    <TextView  
+    <TextView android:id="@+id/rollIndexLabel"
     android:layout_height="wrap_content" 
     android:text="@string/rollIndexLabel" android:layout_weight="0.167" android:layout_width="0dp"/>
     <TextView android:id="@+id/rollIndex"
@@ -37,4 +39,10 @@
     android:layout_height="wrap_content" 
     android:text="@string/yawIndex" android:layout_weight="0.167" android:layout_width="0dp"/>
     </LinearLayout>
+
+    <TextView android:text="" android:id="@+id/text1"
+    android:layout_width="fill_parent" 
+    android:layout_height="wrap_content"
+    />
+
 </LinearLayout>

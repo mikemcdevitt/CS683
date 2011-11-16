@@ -1,6 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">ScreenIndexTest</string>
+    <string name="prefTitle">My Preferences</string>
+    <string name="prefSummary">Set Screen Preferences</string>
+    <string name="default_start_value_preference">0</string>
+    <string name="listTitle">Choose Starting Pitch</string>
+    <string name="listSummary">Set Screen Options</string>
+    <string name="start_list">start_list</string>
+    <string name="dialogTitle">Choose Starting Pitch</string>
+    <string name="menu_prefs_title">Settings</string>
+    
+    
     <string name="screenIndices">Screen Indices</string>
     <string name="xIndexLabel">x Index</string>
     <string name="xIndex">0</string>
