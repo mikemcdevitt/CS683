@@ -1,3 +1,7 @@
+                                                                     
+                                                                     
+                                                                     
+                                             
 package com.example.test;
 
 import android.app.Activity;
@@ -29,16 +33,17 @@ public class ScreenIndexTestActivity extends Activity {
     private Resources resources;
     float x = 0;
     float y = 0;
+	//private static final float width = 30;
+	//private static final float height = 30;
 	private int baseFreqIndex;
 	double freq;
 	AudioSynthesisTask audioSynth;
-	boolean keepGoing = false;
-
-    
-    /** Called when the activity is first created. */
+	
+	/** Called when the activity is first created. */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        
         
         //setContentView(R.layout.main);
         this.cv = new CircleView(this, x,y);
@@ -99,12 +104,13 @@ public class ScreenIndexTestActivity extends Activity {
         width = d.getWidth();           // gets maximum x value (1280 on galaxy tab)
         height = d.getHeight();          // gets maximum y value (800 on galaxy tab)
         
-        double x_fraction = x/width;
-    	
         double f_start = 27.5 * Math.pow(2,baseFreqIndex);
         double f_final = f_start * 2;
         
-        freq = f_start + x_fraction*(f_final - f_start);
+        double x_fraction = x/width;
+        double y_fraction = y/height;
+        
+        double freq = f_start + x_fraction*(f_final - f_start);
        
         //TextView tvX = (TextView)findViewById(R.id.xIndex); 
         //TextView tvY = (TextView)findViewById(R.id.yIndex); 
@@ -117,23 +123,17 @@ public class ScreenIndexTestActivity extends Activity {
         
         
          if (e.getAction() == android.view.MotionEvent.ACTION_DOWN) {
-            keepGoing = true;
             audioSynth = new AudioSynthesisTask();
+            audioSynth.setFreq(freq);
             audioSynth.execute();
           } else if (e.getAction() == android.view.MotionEvent.ACTION_MOVE) {
-        	  
-        	  // NEED A BETTER WAY TO HANDLE MOUSE MOVE EVENTS.
-        	  
-        	  //audioSynth.cancel(true);
-        	  //audioSynth = new AudioSynthesisTask();
-        	  //keepGoing = true;
-        	  //audioSynth.execute();
+        	  audioSynth.setFreq(freq);
           } else if (e.getAction() == android.view.MotionEvent.ACTION_UP) {
-        	  keepGoing = false;
+        	audioSynth.stopPlay();
           }
+         
         
-        
-        this.setContentView(new CircleView(this, x, y));
+        //this.setContentView(new CircleView(this, x, y));
         
         return true;
     }
@@ -165,6 +165,11 @@ public class ScreenIndexTestActivity extends Activity {
     }
     
     private class AudioSynthesisTask extends AsyncTask<Void, Void, Void> {
+    	AudioTrack audioTrack;
+    	boolean keepGoing = true;
+    	double freq = 440.0;
+    	
+    	
         @Override
         protected Void doInBackground(Void... params) {
           final int SAMPLE_RATE = 11025;
@@ -173,7 +178,7 @@ public class ScreenIndexTestActivity extends Activity {
               AudioFormat.CHANNEL_CONFIGURATION_MONO,
               AudioFormat.ENCODING_PCM_16BIT);
 
-          AudioTrack audioTrack = new AudioTrack(AudioManager.STREAM_MUSIC,
+          audioTrack = new AudioTrack(AudioManager.STREAM_MUSIC,
               SAMPLE_RATE, AudioFormat.CHANNEL_CONFIGURATION_MONO,
               AudioFormat.ENCODING_PCM_16BIT, minSize,
               AudioTrack.MODE_STREAM);
@@ -182,11 +187,13 @@ public class ScreenIndexTestActivity extends Activity {
 
           short[] buffer = new short[minSize];
 
-          float angular_frequency = (float) (2 * Math.PI) * (float)freq
-              / SAMPLE_RATE;
+          
           float angle = 0;
 
+          float angular_frequency;
           while (keepGoing) {
+        	  angular_frequency = (float) (2 * Math.PI) * (float)freq
+              / SAMPLE_RATE;
             for (int i = 0; i < buffer.length; i++) {           	
               buffer[i] = (short) (Short.MAX_VALUE * ((float) Math
                   .sin(angle)));
@@ -197,5 +204,15 @@ public class ScreenIndexTestActivity extends Activity {
 
           return null;
         }
+        
+        protected void stopPlay() {
+        	keepGoing=false;
+        	audioTrack.stop();
+        }
+        
+        protected void setFreq(double dfreq) {
+        	freq = dfreq;
+        }
+        
       }
 }
