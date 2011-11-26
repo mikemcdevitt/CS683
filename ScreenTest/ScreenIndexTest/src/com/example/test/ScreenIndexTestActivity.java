@@ -36,6 +36,9 @@ public class ScreenIndexTestActivity extends Activity {
 	//private static final float width = 30;
 	//private static final float height = 30;
 	private int baseFreqIndex;
+	public int height;
+	public int width;
+	public double y_fraction;
 	double freq;
 	AudioSynthesisTask audioSynth;
 	
@@ -53,6 +56,12 @@ public class ScreenIndexTestActivity extends Activity {
         
         resources = this.getResources();
         setOptionText();    
+        
+
+    	
+        Display d = getWindowManager().getDefaultDisplay(); 
+        width = d.getWidth();           // gets maximum x value (1280 on galaxy tab)
+        height = d.getHeight();          // gets maximum y value (800 on galaxy tab)
     }
     
     @Override
@@ -97,18 +106,15 @@ public class ScreenIndexTestActivity extends Activity {
     	x = e.getX();
         y = e.getY();
         
-        int width;
-    	int height;
-    	
-        Display d = getWindowManager().getDefaultDisplay(); 
-        width = d.getWidth();           // gets maximum x value (1280 on galaxy tab)
-        height = d.getHeight();          // gets maximum y value (800 on galaxy tab)
+        //int width;
+    	//int height;
         
         double f_start = 27.5 * Math.pow(2,baseFreqIndex);
-        double f_final = f_start * 2;
+        double f_final = f_start * 3;
         
         double x_fraction = x/width;
-        double y_fraction = y/height;
+        //double y_fraction = y/height;
+        y_fraction = y/height;
         
         double freq = f_start + x_fraction*(f_final - f_start);
        
@@ -172,7 +178,7 @@ public class ScreenIndexTestActivity extends Activity {
     	
         @Override
         protected Void doInBackground(Void... params) {
-          final int SAMPLE_RATE = 11025;
+          final int SAMPLE_RATE = 44025;
 
           int minSize = AudioTrack.getMinBufferSize(SAMPLE_RATE,
               AudioFormat.CHANNEL_CONFIGURATION_MONO,
@@ -192,12 +198,28 @@ public class ScreenIndexTestActivity extends Activity {
 
           float angular_frequency;
           while (keepGoing) {
+        	//  angular_frequency = (float) (2 * Math.PI) * (float)freq
+            //  / SAMPLE_RATE;
+        	//  angular_frequency = (float) (2 * (float)freq)
+            //  / SAMPLE_RATE;
+          	    
+          if ( y_fraction >= 0.5 ) {
         	  angular_frequency = (float) (2 * Math.PI) * (float)freq
-              / SAMPLE_RATE;
-            for (int i = 0; i < buffer.length; i++) {           	
-              buffer[i] = (short) (Short.MAX_VALUE * ((float) Math
+        	              / SAMPLE_RATE;
+        	for (int i = 0; i < buffer.length; i++) {           	
+        	  buffer[i] = (short) (Short.MAX_VALUE * ((float) Math
                   .sin(angle)));
               angle += angular_frequency;
+        	}
+          }
+              else{
+            	  angular_frequency = (float) (2 * (float)freq)
+                          / SAMPLE_RATE;
+              	for (int i = 0; i < buffer.length; i++) {           	
+              	  buffer[i] = (short) (Short.MAX_VALUE * ((float) Math
+                    .floor(angle)));
+                angle += angular_frequency;
+              	}
             }
             audioTrack.write(buffer, 0, buffer.length);
           }
