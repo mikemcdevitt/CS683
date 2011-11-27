@@ -217,7 +217,7 @@ public class ScreenIndexTestActivity extends Activity {
                           / SAMPLE_RATE;
               	for (int i = 0; i < buffer.length; i++) {           	
               	  buffer[i] = (short) (Short.MAX_VALUE * ((float) Math
-                    .floor(angle)));
+                    .floor(angle)) * 0.5);
                 angle += angular_frequency;
               	}
             }
