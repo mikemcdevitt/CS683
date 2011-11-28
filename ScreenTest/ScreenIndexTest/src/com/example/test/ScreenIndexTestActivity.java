@@ -11,6 +11,7 @@ import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.Paint;
 import android.graphics.drawable.ShapeDrawable;
 import android.graphics.drawable.shapes.OvalShape;
 import android.media.AudioFormat;
@@ -38,6 +39,10 @@ public class ScreenIndexTestActivity extends Activity {
 	private int baseFreqIndex;
 	public int height;
 	public int width;
+	public int octaves = 2;
+	public static int x_segments = 12;
+	public int y_segments;
+	public static float[] lines = new float[(x_segments + 1) * 4];
 	public double y_fraction;
 	double freq;
 	AudioSynthesisTask audioSynth;
@@ -62,6 +67,23 @@ public class ScreenIndexTestActivity extends Activity {
         Display d = getWindowManager().getDefaultDisplay(); 
         width = d.getWidth();           // gets maximum x value (1280 on galaxy tab)
         height = d.getHeight();          // gets maximum y value (800 on galaxy tab)
+    	
+        //lines = {0f, 0f, 0f, 800f};
+        int j;
+        
+        for (int i = 0; i <= x_segments; i++)
+        {
+        	j = (i * 4);
+        	lines[j] = (width / x_segments) * i;
+        	lines[j + 1] = 0;
+        	lines[j + 2] = (width / x_segments) * i;
+        	lines[j + 3] = height;
+        }
+        j = x_segments * 4;
+        lines[j] = width - 1;
+        lines[j + 1] = 0;
+        lines[j + 2] = width - 1;
+        lines[j + 3] = height;
     }
     
     @Override
@@ -110,7 +132,7 @@ public class ScreenIndexTestActivity extends Activity {
     	//int height;
         
         double f_start = 27.5 * Math.pow(2,baseFreqIndex);
-        double f_final = f_start * 3;
+        double f_final = f_start * 2;
         
         double x_fraction = x/width;
         //double y_fraction = y/height;
@@ -139,7 +161,7 @@ public class ScreenIndexTestActivity extends Activity {
           }
          
         
-        //this.setContentView(new CircleView(this, x, y));
+        this.setContentView(new CircleView(this, x, y));
         
         return true;
     }
@@ -151,6 +173,7 @@ public class ScreenIndexTestActivity extends Activity {
     	private int left, top, right, bottom;
     	private static final float width = 30;
     	private static final float height = 30;
+    	private Paint p;
     	
     	public CircleView(Context context, float x, float y) {
     		super(context);
@@ -167,6 +190,9 @@ public class ScreenIndexTestActivity extends Activity {
     	protected void onDraw(Canvas canvas) {
     		circle.setBounds(left, top, right, bottom);
     		this.circle.draw(canvas);
+		     Paint p = new Paint();
+    		     p.setColor(Color.BLUE);
+    		     canvas.drawLines(lines, p);
     	}
     }
     
@@ -206,7 +232,7 @@ public class ScreenIndexTestActivity extends Activity {
           if ( y_fraction >= 0.5 ) {
         	  angular_frequency = (float) (2 * Math.PI) * (float)freq
         	              / SAMPLE_RATE;
-        	for (int i = 0; i < buffer.length; i++) {           	
+        	for (int i = 0; i < buffer.length / 9; i++) {           	
         	  buffer[i] = (short) (Short.MAX_VALUE * ((float) Math
                   .sin(angle)));
               angle += angular_frequency;
@@ -215,13 +241,13 @@ public class ScreenIndexTestActivity extends Activity {
               else{
             	  angular_frequency = (float) (2 * (float)freq)
                           / SAMPLE_RATE;
-              	for (int i = 0; i < buffer.length; i++) {           	
+              	for (int i = 0; i < buffer.length / 9; i++) {           	
               	  buffer[i] = (short) (Short.MAX_VALUE * ((float) Math
                     .floor(angle)) * 0.5);
                 angle += angular_frequency;
               	}
             }
-            audioTrack.write(buffer, 0, buffer.length);
+            audioTrack.write(buffer, 0, buffer.length / 9);
           }
 
           return null;
