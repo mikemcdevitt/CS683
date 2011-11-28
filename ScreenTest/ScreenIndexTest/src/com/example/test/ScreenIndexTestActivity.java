@@ -41,8 +41,9 @@ public class ScreenIndexTestActivity extends Activity {
 	public int width;
 	public int octaves = 2;
 	public static int x_segments = 12;
-	public int y_segments;
-	public static float[] lines = new float[(x_segments + 1) * 4];
+	public static int y_segments = 2;
+	public static float[] x_lines = new float[(x_segments + 1) * 4];
+	public static float[] y_lines = new float[(y_segments + 1) * 4];
 	public double y_fraction;
 	double freq;
 	AudioSynthesisTask audioSynth;
@@ -71,19 +72,32 @@ public class ScreenIndexTestActivity extends Activity {
         //lines = {0f, 0f, 0f, 800f};
         int j;
         
+        for (int i = 0; i <= y_segments; i++)
+        {
+        	j = (i * 4);
+        	y_lines[j] = 0;
+        	y_lines[j + 1] = (height / y_segments) * i;
+        	y_lines[j + 2] = width;
+        	y_lines[j + 3] = (height / y_segments) * i;
+        }
+        j = y_segments * 4;
+        y_lines[j] = 0;
+        y_lines[j + 1] = height - 1;
+        y_lines[j + 2] = width;
+        y_lines[j + 3] = height - 1;
         for (int i = 0; i <= x_segments; i++)
         {
         	j = (i * 4);
-        	lines[j] = (width / x_segments) * i;
-        	lines[j + 1] = 0;
-        	lines[j + 2] = (width / x_segments) * i;
-        	lines[j + 3] = height;
+        	x_lines[j] = (width / x_segments) * i;
+        	x_lines[j + 1] = 0;
+        	x_lines[j + 2] = (width / x_segments) * i;
+        	x_lines[j + 3] = height;
         }
         j = x_segments * 4;
-        lines[j] = width - 1;
-        lines[j + 1] = 0;
-        lines[j + 2] = width - 1;
-        lines[j + 3] = height;
+        x_lines[j] = width - 1;
+        x_lines[j + 1] = 0;
+        x_lines[j + 2] = width - 1;
+        x_lines[j + 3] = height;
     }
     
     @Override
@@ -192,7 +206,9 @@ public class ScreenIndexTestActivity extends Activity {
     		this.circle.draw(canvas);
 		     Paint p = new Paint();
     		     p.setColor(Color.BLUE);
-    		     canvas.drawLines(lines, p);
+    		     canvas.drawLines(x_lines, p);
+    		     p.setColor(Color.YELLOW);
+    		     canvas.drawLines(y_lines, p);
     	}
     }
     
