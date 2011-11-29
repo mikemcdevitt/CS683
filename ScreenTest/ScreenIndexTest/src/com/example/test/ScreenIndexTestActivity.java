@@ -12,6 +12,8 @@ import android.content.res.Resources;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.Point;
+import android.graphics.drawable.Drawable;
 import android.graphics.drawable.ShapeDrawable;
 import android.graphics.drawable.shapes.OvalShape;
 import android.media.AudioFormat;
@@ -26,6 +28,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.Window;
 import android.widget.TextView;
 
 public class ScreenIndexTestActivity extends Activity {
@@ -54,7 +57,7 @@ public class ScreenIndexTestActivity extends Activity {
         super.onCreate(savedInstanceState);
         
         
-        //setContentView(R.layout.main);
+        this.requestWindowFeature(Window.FEATURE_NO_TITLE); 
         this.cv = new CircleView(this, x,y);
         this.setContentView(this.cv);
         
@@ -169,13 +172,14 @@ public class ScreenIndexTestActivity extends Activity {
             audioSynth.setFreq(freq);
             audioSynth.execute();
           } else if (e.getAction() == android.view.MotionEvent.ACTION_MOVE) {
-        	  audioSynth.setFreq(freq);
+            audioSynth.setFreq(freq);
           } else if (e.getAction() == android.view.MotionEvent.ACTION_UP) {
         	audioSynth.stopPlay();
           }
          
-        
-        this.setContentView(new CircleView(this, x, y));
+        cv.mySpritePos.x = Math.round(x);
+        cv.mySpritePos.y = Math.round(y);
+        cv.invalidate();
         
         return true;
     }
@@ -183,27 +187,22 @@ public class ScreenIndexTestActivity extends Activity {
     
     
     private static class CircleView extends View {
-    	private  ShapeDrawable circle = new ShapeDrawable();
-    	private int left, top, right, bottom;
-    	private static final float width = 30;
-    	private static final float height = 30;
+    	private  ShapeDrawable sprite = new ShapeDrawable(new OvalShape());
+    	private int spriteWidth, spriteHeight = 50;
     	private Paint p;
+    	public Point mySpritePos = new Point(0, 0);
+
     	
     	public CircleView(Context context, float x, float y) {
     		super(context);
     		setFocusable(true);
-    		this.left = Math.round(x - width/2);
-    		this.top = Math.round(y - height/2);
-    		this.right = Math.round(x + width/2);
-    		this.bottom = Math.round(y + height/2);
-    		this.circle = new ShapeDrawable(new OvalShape());
-    		this.circle.getPaint().setColor(Color.CYAN);
+    		this.sprite.getPaint().setColor(Color.CYAN);
     	}
     	
     	@Override
-    	protected void onDraw(Canvas canvas) {
-    		circle.setBounds(left, top, right, bottom);
-    		this.circle.draw(canvas);
+    	protected void onDraw(Canvas canvas) {   		
+    		this.sprite.setBounds(mySpritePos.x - 25, mySpritePos.y-25, mySpritePos.x+25, mySpritePos.y+25);
+    		this.sprite.draw(canvas);
 		     Paint p = new Paint();
     		     p.setColor(Color.BLUE);
     		     canvas.drawLines(x_lines, p);
@@ -216,6 +215,7 @@ public class ScreenIndexTestActivity extends Activity {
     	AudioTrack audioTrack;
     	boolean keepGoing = true;
     	double freq = 440.0;
+    	int timer;
     	
     	
         @Override
@@ -271,7 +271,13 @@ public class ScreenIndexTestActivity extends Activity {
         
         protected void stopPlay() {
         	keepGoing=false;
-        	audioTrack.stop();
+			if (audioTrack != null) {
+				try {
+					audioTrack.stop();
+				} catch (IllegalStateException ise) {
+					// do nothing
+				}
+			}
         }
         
         protected void setFreq(double dfreq) {
