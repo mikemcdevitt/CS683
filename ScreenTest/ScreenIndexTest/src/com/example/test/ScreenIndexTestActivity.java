@@ -275,7 +275,7 @@ public class ScreenIndexTestActivity extends Activity {
           if ( y_fraction >= 0.5 ) {
         	  angular_frequency = (float) (2 * Math.PI) * (float)freq
         	              / SAMPLE_RATE;
-        	for (int i = 0; i < buffer.length / 9; i++) {           	
+        	for (int i = 0; i < buffer.length / 6; i++) {           	
         	  buffer[i] = (short) (Short.MAX_VALUE * ((float) Math
                   .sin(angle)));
               angle += angular_frequency;
@@ -284,13 +284,13 @@ public class ScreenIndexTestActivity extends Activity {
               else{
             	  angular_frequency = (float) (2 * (float)freq)
                           / SAMPLE_RATE;
-              	for (int i = 0; i < buffer.length / 9; i++) {           	
+              	for (int i = 0; i < buffer.length / 6; i++) {           	
               	  buffer[i] = (short) (Short.MAX_VALUE * ((float) Math
                     .floor(angle)) * 0.5);
                 angle += angular_frequency;
               	}
             }
-            audioTrack.write(buffer, 0, buffer.length / 9);
+            audioTrack.write(buffer, 0, buffer.length / 6);
           }
 
           return null;
