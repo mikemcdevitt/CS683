@@ -1,7 +1,3 @@
-                                                                     
-                                                                     
-                                                                     
-                                             
 package com.example.test;
 
 import android.app.Activity;
@@ -29,9 +25,16 @@ import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.Window;
+import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
+import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.CompoundButton.OnCheckedChangeListener;
+import android.widget.LinearLayout.LayoutParams;
 
 public class ScreenIndexTestActivity extends Activity {
+	
     private TextView tv = null;
     private CircleView cv = null;
     private Resources resources;
@@ -50,17 +53,43 @@ public class ScreenIndexTestActivity extends Activity {
 	public double y_fraction;
 	double freq;
 	AudioSynthesisTask audioSynth;
+	AudioRecorder audioRecorder;
 	
 	/** Called when the activity is first created. */
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
         
-        
+    	// Initialize stuff.
+    	super.onCreate(savedInstanceState);
         this.requestWindowFeature(Window.FEATURE_NO_TITLE); 
         this.cv = new CircleView(this, x,y);
-        this.setContentView(this.cv);
+        this.audioRecorder = new AudioRecorder();
+           
+        // Build the layout
+        LinearLayout l1 = new LinearLayout(this);      
+        l1.setOrientation(LinearLayout.VERTICAL);
+        l1.setLayoutParams(new LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.FILL_PARENT));
+        LinearLayout layout = (LinearLayout) View.inflate(this, R.layout.main_record, null); 
+        l1.addView(layout);
+        l1.addView(this.cv);
+
+        // Set the content view.
+        this.setContentView(l1);
         
+        // Set the record button.
+        CheckBox cb = (CheckBox) findViewById(R.id.recordcbx);
+        cb.setOnCheckedChangeListener(new OnCheckedChangeListener() {	
+	        public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+	        	if (buttonView.isChecked()) {
+	        		AppLog.logString("Start Recording");
+	        		audioRecorder.startRecording();
+	        	} else {
+	        		AppLog.logString("Stop Recording");
+	        		audioRecorder.stopRecording();
+	        	}
+	        }
+        }); 
+
         tv = (TextView)findViewById(R.id.pitchIndex);
         
         resources = this.getResources();
@@ -134,7 +163,7 @@ public class ScreenIndexTestActivity extends Activity {
     	baseFreqIndex = Integer.valueOf(option);
     	//tv.setText("preference for start is " + option + " (" + optionText[Integer.parseInt(option)] + ")" );
     }
-    
+ 
     
     @Override 
     public boolean onTouchEvent(MotionEvent e) {
@@ -184,8 +213,6 @@ public class ScreenIndexTestActivity extends Activity {
         return true;
     }
     
-    
-    
     private static class CircleView extends View {
     	private  ShapeDrawable sprite = new ShapeDrawable(new OvalShape());
     	private int spriteWidth, spriteHeight = 50;
@@ -201,7 +228,7 @@ public class ScreenIndexTestActivity extends Activity {
     	
     	@Override
     	protected void onDraw(Canvas canvas) {   		
-    		this.sprite.setBounds(mySpritePos.x - 25, mySpritePos.y-25, mySpritePos.x+25, mySpritePos.y+25);
+    		this.sprite.setBounds(mySpritePos.x - 25, mySpritePos.y - 25, mySpritePos.x + 25, mySpritePos.y + 25);
     		this.sprite.draw(canvas);
 		     Paint p = new Paint();
     		     p.setColor(Color.BLUE);

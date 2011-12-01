@@ -18,23 +18,34 @@ public final class R {
     public static final class attr {
     }
     public static final class drawable {
-        public static final int icon=0x7f020000;
+        public static final int checkbox_selector=0x7f020000;
+        public static final int icon=0x7f020001;
+        public static final int recordfalse=0x7f020002;
+        public static final int recordtrue=0x7f020003;
     }
     public static final class id {
         public static final int RotationLayout=0x7f080004;
+        public static final int currentDeckTextView=0x7f08000f;
         public static final int linearLayout1=0x7f080001;
-        public static final int menu_prefs=0x7f08000a;
+        public static final int loadDeckB=0x7f08000d;
+        public static final int menu_prefs=0x7f080010;
+        public static final int newDeckB=0x7f08000c;
         public static final int pitchIndex=0x7f080005;
+        public static final int recordcbx=0x7f08000b;
+        public static final int recordview=0x7f08000a;
         public static final int rollIndex=0x7f080007;
         public static final int rollIndexLabel=0x7f080006;
         public static final int testID=0x7f080000;
         public static final int text1=0x7f080009;
+        public static final int viewEditionB=0x7f08000e;
         public static final int xIndex=0x7f080002;
         public static final int yIndex=0x7f080003;
         public static final int yawIndex=0x7f080008;
     }
     public static final class layout {
         public static final int main=0x7f030000;
+        public static final int main_record=0x7f030001;
+        public static final int mainmenu=0x7f030002;
     }
     public static final class menu {
         public static final int mainmenu=0x7f070000;
