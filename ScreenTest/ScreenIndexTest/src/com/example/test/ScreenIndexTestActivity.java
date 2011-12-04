@@ -26,7 +26,13 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.Window;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
+import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.CompoundButton.OnCheckedChangeListener;
+import android.widget.LinearLayout.LayoutParams;
 
 
 public class ScreenIndexTestActivity extends Activity {
@@ -51,6 +57,7 @@ public class ScreenIndexTestActivity extends Activity {
 	double freq;
 	int keyIndex;
 	public float wk_width;
+	AudioRecorder audioRecorder;
 	public static float[] pitches = new float[octaves * 12];
 	public static float[] basePitches = {32.7f, 34.65f, 36.71f, 38.89f, 41.2f, 43.65f, 46.25f, 49f, 51.91f, 55f, 58.28f, 61.74f};
 	AudioSynthesisTask audioSynth;
@@ -67,7 +74,37 @@ public class ScreenIndexTestActivity extends Activity {
         
         //setContentView(R.layout.main);
         this.cv = new CircleView(this, x,y);
-        this.setContentView(this.cv);
+        this.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        this.cv = new CircleView(this, x,y);
+        this.audioRecorder = new AudioRecorder();
+           
+        // Build the layout
+        LinearLayout l1 = new LinearLayout(this);
+        l1.setOrientation(LinearLayout.VERTICAL);
+        l1.setLayoutParams(new LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.FILL_PARENT));
+        LinearLayout layout = (LinearLayout) View.inflate(this, R.layout.main_record, null);
+        l1.addView(layout);
+        l1.addView(this.cv);
+
+        // Set the content view.
+		this.setContentView(l1);
+
+		// Set the record button.
+		CheckBox cb = (CheckBox) findViewById(R.id.recordcbx);
+		cb.setOnCheckedChangeListener(new OnCheckedChangeListener() {
+			public void onCheckedChanged(CompoundButton buttonView,
+					boolean isChecked) {
+				if (buttonView.isChecked()) {
+					AppLog.logString("Start Recording");
+					// audioRecorder.startRecording();
+				} else {
+					AppLog.logString("Stop Recording");
+					// audioRecorder.stopRecording();
+				}
+			}
+		});
+
+
         
         tv = (TextView)findViewById(R.id.pitchIndex);
         
