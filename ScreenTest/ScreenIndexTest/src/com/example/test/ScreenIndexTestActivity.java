@@ -28,6 +28,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.TextView;
 
+
 public class ScreenIndexTestActivity extends Activity {
     private TextView tv = null;
     private CircleView cv = null;
@@ -39,15 +40,25 @@ public class ScreenIndexTestActivity extends Activity {
 	private int baseFreqIndex;
 	public int height;
 	public int width;
-	public int octaves = 2;
-	public static int x_segments = 12;
-	public static int y_segments = 2;
+	public static int octaves = 9;
+	public static int x_segments = 21;
+	public static int y_segments = 1;
+	public static int blackKeys = 24;
 	public static float[] x_lines = new float[(x_segments + 1) * 4];
 	public static float[] y_lines = new float[(y_segments + 1) * 4];
+	public static float[] bk_lines = new float[blackKeys * 12];
 	public double y_fraction;
 	double freq;
+	int keyIndex;
+	public float wk_width;
+	public static float[] pitches = new float[octaves * 12];
+	public static float[] basePitches = {32.7f, 34.65f, 36.71f, 38.89f, 41.2f, 43.65f, 46.25f, 49f, 51.91f, 55f, 58.28f, 61.74f};
 	AudioSynthesisTask audioSynth;
+	public static int octave;
+	public static int[] keyTranslation = {0, 2, 4, 5, 7, 9, 11};
 	
+	
+
 	/** Called when the activity is first created. */
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -68,9 +79,18 @@ public class ScreenIndexTestActivity extends Activity {
         Display d = getWindowManager().getDefaultDisplay(); 
         width = d.getWidth();           // gets maximum x value (1280 on galaxy tab)
         height = d.getHeight();          // gets maximum y value (800 on galaxy tab)
-    	
-        //lines = {0f, 0f, 0f, 800f};
+
         int j;
+        
+        for (int i = 0; i < octaves; i++)
+    	{
+        	for (j = 0; j < 12; j++)
+        	{
+        		pitches[j + (i * 12)] = basePitches[j] * (float)Math.pow(2, i);
+        	}
+    	}
+        
+        //lines = {0f, 0f, 0f, 800f};
         
         for (int i = 0; i <= y_segments; i++)
         {
@@ -85,19 +105,50 @@ public class ScreenIndexTestActivity extends Activity {
         y_lines[j + 1] = height - 1;
         y_lines[j + 2] = width;
         y_lines[j + 3] = height - 1;
+        int bk_index = 0;
+        wk_width = width / x_segments;
+        float bk_width = wk_width / 2;
         for (int i = 0; i <= x_segments; i++)
         {
+        	bk_index = i * 12;
+
         	j = (i * 4);
+    		
+        	if(i > 0 && i < x_segments && (float)(i%7)/3 != 1.0f && (float)(i%7)/7 != 0.0f)
+        	{
+        		bk_lines[bk_index] = (wk_width * i) - bk_width/2;
+        		bk_lines[bk_index + 1] = 0;
+        		bk_lines[bk_index + 2] = (wk_width * i) - bk_width/2; 
+        		bk_lines[bk_index + 3] = (height / y_segments) * 0.5f;
+        		bk_lines[bk_index + 4] = (wk_width * i) - bk_width/2;
+        		bk_lines[bk_index + 5] = (height / y_segments) * 0.5f;
+        		bk_lines[bk_index + 6] = (wk_width * i) + bk_width/2;
+        		bk_lines[bk_index + 7] = (height / y_segments) * 0.5f;
+        		bk_lines[bk_index + 8] = (wk_width * i) + bk_width/2;
+        		bk_lines[bk_index + 9] = 0;
+        		bk_lines[bk_index + 10] = (wk_width * i) + bk_width/2;
+        		bk_lines[bk_index + 11] = (height / y_segments) * 0.5f;
+
+            	x_lines[j] = (width / x_segments) * i;
+        		x_lines[j + 1] = (height / y_segments * 0.5f);
+            	x_lines[j + 2] = (width / x_segments) * i;
+            	x_lines[j + 3] = height;
+        	}
+        	else
+        	{
         	x_lines[j] = (width / x_segments) * i;
         	x_lines[j + 1] = 0;
         	x_lines[j + 2] = (width / x_segments) * i;
         	x_lines[j + 3] = height;
+        	}
         }
         j = x_segments * 4;
         x_lines[j] = width - 1;
         x_lines[j + 1] = 0;
         x_lines[j + 2] = width - 1;
         x_lines[j + 3] = height;
+        
+        
     }
     
     @Override
@@ -130,6 +181,7 @@ public class ScreenIndexTestActivity extends Activity {
     	String[] optionText = resources.getStringArray(R.array.start_list_options);
     	baseFreqIndex = Integer.valueOf(option);
     	//tv.setText("preference for start is " + option + " (" + optionText[Integer.parseInt(option)] + ")" );
+    	
     }
     
     
@@ -152,7 +204,11 @@ public class ScreenIndexTestActivity extends Activity {
         //double y_fraction = y/height;
         y_fraction = y/height;
         
-        double freq = f_start + x_fraction*(f_final - f_start);
+        int key = keyTranslation[((int)Math.floor(x/wk_width))%7] + (12 * (int)((x/wk_width)/7));
+        
+        //double freq = f_start + x_fraction*(f_final - f_start);
+        
+        double freq = pitches[key];
        
         //TextView tvX = (TextView)findViewById(R.id.xIndex); 
         //TextView tvY = (TextView)findViewById(R.id.yIndex); 
@@ -207,7 +263,8 @@ public class ScreenIndexTestActivity extends Activity {
 		     Paint p = new Paint();
     		     p.setColor(Color.BLUE);
     		     canvas.drawLines(x_lines, p);
-    		     p.setColor(Color.YELLOW);
+    		     canvas.drawLines(bk_lines, p);
+    		     p.setColor(Color.GRAY);
     		     canvas.drawLines(y_lines, p);
     	}
     }
@@ -246,9 +303,9 @@ public class ScreenIndexTestActivity extends Activity {
             //  / SAMPLE_RATE;
           	    
           if ( y_fraction >= 0.5 ) {
-        	  angular_frequency = (float) (2 * Math.PI) * (float)freq
-        	              / SAMPLE_RATE;
-        	for (int i = 0; i < buffer.length / 9; i++) {           	
+        	  angular_frequency = (float) (2 * Math.PI) * (((float)freq
+        	              / SAMPLE_RATE));
+        	for (int i = 0; i < buffer.length / 6; i++) {           	
         	  buffer[i] = (short) (Short.MAX_VALUE * ((float) Math
                   .sin(angle)));
               angle += angular_frequency;
@@ -257,13 +314,13 @@ public class ScreenIndexTestActivity extends Activity {
               else{
             	  angular_frequency = (float) (2 * (float)freq)
                           / SAMPLE_RATE;
-              	for (int i = 0; i < buffer.length / 9; i++) {           	
+              	for (int i = 0; i < buffer.length / 6; i++) {           	
               	  buffer[i] = (short) (Short.MAX_VALUE * ((float) Math
-                    .floor(angle)) * 0.5);
+                    .floor(angle)));
                 angle += angular_frequency;
               	}
             }
-            audioTrack.write(buffer, 0, buffer.length / 9);
+            audioTrack.write(buffer, 0, buffer.length / 6);
           }
 
           return null;
@@ -278,5 +335,10 @@ public class ScreenIndexTestActivity extends Activity {
         	freq = dfreq;
         }
         
+        
+
+        
       }
+    
+    
 }
