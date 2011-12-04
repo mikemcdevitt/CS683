@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+android:orientation="vertical"
+android:layout_width="fill_parent"
+android:layout_height="fill_parent">
+<Button android:id="@+id/newDeckB"
+        android:text="New Deck"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"/>
+<Button android:id="@+id/loadDeckB"
+        android:text="Load Deck"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"/>
+<Button android:id="@+id/viewEditionB"
+        android:text="View Edition"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"/>
+<TextView android:id="@+id/currentDeckTextView"
+        android:text="Default Deck"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+</LinearLayout>
