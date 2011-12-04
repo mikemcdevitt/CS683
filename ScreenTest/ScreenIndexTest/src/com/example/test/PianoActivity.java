@@ -29,7 +29,7 @@ import android.view.View;
 import android.widget.TextView;
 
 
-public class ScreenIndexTestActivity extends Activity {
+public class PianoActivity extends Activity {
     private TextView tv = null;
     private CircleView cv = null;
     private Resources resources;
@@ -302,7 +302,7 @@ public class ScreenIndexTestActivity extends Activity {
         	//  angular_frequency = (float) (2 * (float)freq)
             //  / SAMPLE_RATE;
           	    
-          if ( y_fraction >= 0.5 ) {
+          /*if ( y_fraction >= 0.5 ) {
         	  angular_frequency = (float) (2 * Math.PI) * (((float)freq
         	              / SAMPLE_RATE));
         	for (int i = 0; i < buffer.length / 6; i++) {           	
@@ -310,8 +310,8 @@ public class ScreenIndexTestActivity extends Activity {
                   .sin(angle)));
               angle += angular_frequency;
         	}
-          }
-              else{
+          }*/
+              //else{
             	  angular_frequency = (float) (2 * (float)freq)
                           / SAMPLE_RATE;
               	for (int i = 0; i < buffer.length / 6; i++) {           	
@@ -319,7 +319,7 @@ public class ScreenIndexTestActivity extends Activity {
                     .floor(angle)));
                 angle += angular_frequency;
               	}
-            }
+            //}
             audioTrack.write(buffer, 0, buffer.length / 6);
           }
 
