@@ -12,6 +12,7 @@ import android.content.res.Resources;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.Point;
 import android.graphics.drawable.ShapeDrawable;
 import android.graphics.drawable.shapes.OvalShape;
 import android.media.AudioFormat;
@@ -26,6 +27,12 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.Window;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
+import android.widget.CompoundButton.OnCheckedChangeListener;
+import android.widget.LinearLayout;
+import android.widget.LinearLayout.LayoutParams;
 import android.widget.TextView;
 
 
@@ -35,7 +42,7 @@ public class ScreenIndexTestActivity extends Activity {
     private Resources resources;
     float x = 0;
     float y = 0;
-	//private static final float width = 30;
+	//private static final float width = 30; 
 	//private static final float height = 30;
 	private int baseFreqIndex;
 	public int height;
@@ -51,6 +58,7 @@ public class ScreenIndexTestActivity extends Activity {
 	double freq;
 	int keyIndex;
 	public float wk_width;
+	AudioRecorder audioRecorder;
 	public static float[] pitches = new float[octaves * 12];
 	public static float[] basePitches = {32.7f, 34.65f, 36.71f, 38.89f, 41.2f, 43.65f, 46.25f, 49f, 51.91f, 55f, 58.28f, 61.74f};
 	AudioSynthesisTask audioSynth;
@@ -67,7 +75,37 @@ public class ScreenIndexTestActivity extends Activity {
         
         //setContentView(R.layout.main);
         this.cv = new CircleView(this, x,y);
-        this.setContentView(this.cv);
+        this.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        this.cv = new CircleView(this, x,y);
+        this.audioRecorder = new AudioRecorder();
+           
+        // Build the layout
+        LinearLayout l1 = new LinearLayout(this);
+        l1.setOrientation(LinearLayout.VERTICAL);
+        l1.setLayoutParams(new LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.FILL_PARENT));
+        LinearLayout layout = (LinearLayout) View.inflate(this, R.layout.main_record, null);
+        l1.addView(layout);
+        l1.addView(this.cv);
+
+        // Set the content view.
+		this.setContentView(l1);
+
+		// Set the record button.
+		CheckBox cb = (CheckBox) findViewById(R.id.recordcbx);
+		cb.setOnCheckedChangeListener(new OnCheckedChangeListener() {
+			public void onCheckedChanged(CompoundButton buttonView,
+					boolean isChecked) {
+				if (buttonView.isChecked()) {
+					AppLog.logString("Start Recording");
+					// audioRecorder.startRecording();
+				} else {
+					AppLog.logString("Stop Recording");
+					// audioRecorder.stopRecording();
+				}
+			}
+		});
+
+
         
         tv = (TextView)findViewById(R.id.pitchIndex);
         
@@ -228,10 +266,14 @@ public class ScreenIndexTestActivity extends Activity {
         	  audioSynth.setFreq(freq);
           } else if (e.getAction() == android.view.MotionEvent.ACTION_UP) {
         	audioSynth.stopPlay();
-          }
+          } 
          
         
-        this.setContentView(new CircleView(this, x, y));
+
+         
+         cv.mySpritePos.x = Math.round(x);
+         cv.mySpritePos.y = Math.round(y);
+         cv.invalidate();
         
         return true;
     }
@@ -239,32 +281,26 @@ public class ScreenIndexTestActivity extends Activity {
     
     
     private static class CircleView extends View {
-    	private  ShapeDrawable circle = new ShapeDrawable();
-    	private int left, top, right, bottom;
-    	private static final float width = 30;
-    	private static final float height = 30;
+    	private  ShapeDrawable sprite = new ShapeDrawable(new OvalShape());
+    	private int spriteWidth, spriteHeight = 50;
     	private Paint p;
+    	public Point mySpritePos = new Point(0, 0);
+
     	
     	public CircleView(Context context, float x, float y) {
     		super(context);
     		setFocusable(true);
-    		this.left = Math.round(x - width/2);
-    		this.top = Math.round(y - height/2);
-    		this.right = Math.round(x + width/2);
-    		this.bottom = Math.round(y + height/2);
-    		this.circle = new ShapeDrawable(new OvalShape());
-    		this.circle.getPaint().setColor(Color.CYAN);
+    		this.sprite.getPaint().setColor(Color.CYAN);
     	}
     	
     	@Override
-    	protected void onDraw(Canvas canvas) {
-    		circle.setBounds(left, top, right, bottom);
-    		this.circle.draw(canvas);
+    	protected void onDraw(Canvas canvas) {   		
+    		this.sprite.setBounds(mySpritePos.x - 25, mySpritePos.y - 25, mySpritePos.x + 25, mySpritePos.y + 25);
+    		this.sprite.draw(canvas);
 		     Paint p = new Paint();
     		     p.setColor(Color.BLUE);
     		     canvas.drawLines(x_lines, p);
-    		     canvas.drawLines(bk_lines, p);
-    		     p.setColor(Color.GRAY);
+    		     p.setColor(Color.YELLOW);
     		     canvas.drawLines(y_lines, p);
     	}
     }
