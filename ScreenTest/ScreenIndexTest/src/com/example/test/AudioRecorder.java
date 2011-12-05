@@ -34,7 +34,7 @@ public class AudioRecorder {
 			file.mkdirs();
 		}
 		
-		File tmpFile = new File("/tmp");
+		File tmpFile = new File("/Music");
 		if (!tmpFile.exists()) {
 			try {
 				throw new IOException("/tmp does not exist");
@@ -43,15 +43,15 @@ public class AudioRecorder {
 			}
 		}
 		
-		
-		return ("/musicFile.3gp");
+		String path = Environment.getDataDirectory().getAbsolutePath();
+		return path += "/musicFile.3gp";
 	}
 	
 	public void startRecording(){
 		recorder = new MediaRecorder();
 		
 		recorder.setAudioSource(MediaRecorder.AudioSource.MIC);
-		recorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
+		recorder.setOutputFormat(MediaRecorder.OutputFormat.DEFAULT);
 		recorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
 		recorder.setOutputFile(getFilename());
 		
@@ -69,13 +69,13 @@ public class AudioRecorder {
 	}
 	
 	public void stopRecording(){
-		if(null != recorder){
+		//if(null != recorder){
 			recorder.stop();
-			recorder.reset();
-			recorder.release();
+			//recorder.reset();
+			//recorder.release();
 			
-			recorder = null;
-		}
+			//srecorder = null;
+		//}
 	}
 	
 	private MediaRecorder.OnErrorListener errorListener = new MediaRecorder.OnErrorListener() {

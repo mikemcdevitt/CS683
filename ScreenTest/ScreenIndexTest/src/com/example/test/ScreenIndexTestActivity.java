@@ -96,10 +96,10 @@ public class ScreenIndexTestActivity extends Activity {
 			public void onCheckedChanged(CompoundButton buttonView,
 					boolean isChecked) {
 				if (buttonView.isChecked()) {
-					AppLog.logString("Start Recording");
+					//AppLog.logString("Start Recording");
 					 audioRecorder.startRecording();
 				} else {
-					AppLog.logString("Stop Recording");
+					//AppLog.logString("Stop Recording");
 					 audioRecorder.stopRecording();
 				}
 			}
