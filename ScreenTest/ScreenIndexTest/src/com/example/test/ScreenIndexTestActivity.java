@@ -97,10 +97,10 @@ public class ScreenIndexTestActivity extends Activity {
 					boolean isChecked) {
 				if (buttonView.isChecked()) {
 					AppLog.logString("Start Recording");
-					// audioRecorder.startRecording();
+					 audioRecorder.startRecording();
 				} else {
 					AppLog.logString("Stop Recording");
-					// audioRecorder.stopRecording();
+					 audioRecorder.stopRecording();
 				}
 			}
 		});

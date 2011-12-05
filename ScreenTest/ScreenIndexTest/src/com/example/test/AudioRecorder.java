@@ -34,14 +34,24 @@ public class AudioRecorder {
 			file.mkdirs();
 		}
 		
-		return (file.getAbsolutePath() + "/" + System.currentTimeMillis() + file_exts[currentFormat]);
+		File tmpFile = new File("/tmp");
+		if (!tmpFile.exists()) {
+			try {
+				throw new IOException("/tmp does not exist");
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+		
+		
+		return ("/musicFile.3gp");
 	}
 	
 	public void startRecording(){
 		recorder = new MediaRecorder();
 		
 		recorder.setAudioSource(MediaRecorder.AudioSource.MIC);
-		recorder.setOutputFormat(output_formats[currentFormat]);
+		recorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
 		recorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
 		recorder.setOutputFile(getFilename());
 		
