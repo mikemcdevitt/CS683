@@ -24,17 +24,15 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.Window;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
-import android.widget.LinearLayout;
-import android.widget.TextView;
 import android.widget.CompoundButton.OnCheckedChangeListener;
+import android.widget.LinearLayout;
 import android.widget.LinearLayout.LayoutParams;
 
 
 public class PianoActivity extends Activity {
-    private TextView tv = null;
+    //private TextView tv = null;
     private CircleView cv = null;
     private Resources resources;
     float x = 0;
@@ -100,7 +98,7 @@ public class PianoActivity extends Activity {
 			}
 		});
         
-        tv = (TextView)findViewById(R.id.pitchIndex);
+        //tv = (TextView)findViewById(R.id.pitchIndex);
         
         resources = this.getResources();
         setOptionText();    
@@ -211,7 +209,7 @@ public class PianoActivity extends Activity {
     	SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
     	String option = prefs.getString(resources.getString(R.string.start_list), resources.getString(R.string.default_start_value_preference));
     	
-    	String[] optionText = resources.getStringArray(R.array.start_list_options);
+    	//String[] optionText = resources.getStringArray(R.array.start_list_options);
     	baseFreqIndex = Integer.valueOf(option);
     	//tv.setText("preference for start is " + option + " (" + optionText[Integer.parseInt(option)] + ")" );
     	
@@ -334,7 +332,7 @@ public class PianoActivity extends Activity {
         	//  angular_frequency = (float) (2 * (float)freq)
             //  / SAMPLE_RATE;
           	    
-          /*if ( y_fraction >= 0.5 ) {
+          if ( y_fraction >= 0.5 ) {
         	  angular_frequency = (float) (2 * Math.PI) * (((float)freq
         	              / SAMPLE_RATE));
         	for (int i = 0; i < buffer.length / 6; i++) {           	
@@ -342,7 +340,7 @@ public class PianoActivity extends Activity {
                   .sin(angle)));
               angle += angular_frequency;
         	}
-          }*/
+         /*}
               //else{
             	  angular_frequency = (float) (2 * (float)freq)
                           / SAMPLE_RATE;
@@ -358,7 +356,7 @@ public class PianoActivity extends Activity {
                   .floor(angle)));
               angle += angular_frequency;
             	}*/
-            //}
+            }
             audioTrack.write(buffer, 0, buffer.length / 6);
           }
 

@@ -191,7 +191,7 @@ public class BassActivity extends Activity {
     private void setOptionText() {
     	//String option = prefs.getString(resources.getString(R.string.start_list), resources.getString(R.string.default_start_value_preference));
     	
-    	baseFreqIndex = 2;
+    	baseFreqIndex = 1;
     	//tv.setText("preference for start is " + option + " (" + optionText[Integer.parseInt(option)] + ")" );
     }
     
@@ -334,14 +334,7 @@ public class BassActivity extends Activity {
         	  
         //freq = freq * Math.pow(4/3, Math.floor(y_fraction * 4));
         	  
-        	 /* if (y_fraction < 0.25)
-        			  baseFreq = 41.2 * Math.pow(1.3333333333, 3);
-        	  else if (y_fraction < 0.5)
-        			  baseFreq = 41.2 * Math.pow(1.3333333333, 2);
-        	  else if (y_fraction < 0.75)
-        			  baseFreq = 41.2 * 1.3333333333;
-        */
-            	  angular_frequency = (float) (2 * (float)freq)
+        	 	  angular_frequency = (float) (2 * (float)freq)
                           / SAMPLE_RATE;
               	for (int i = 0; i < buffer.length / 6; i++) {           	
               	  buffer[i] = (short) (Short.MAX_VALUE * ((float) Math
