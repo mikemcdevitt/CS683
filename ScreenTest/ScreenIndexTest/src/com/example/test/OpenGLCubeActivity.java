@@ -88,17 +88,27 @@ public class OpenGLCubeActivity extends Activity {
         	 this.dsv.xrot_delta = 1.0f;
         	 this.dsv.yrot_delta = 1.0f;
     		 int i = 0;
-        	 //if (moved == false)
-        	 //if (Math.abs(x_diff) < 10 && Math.abs(y_diff) < 10)
-        	 //{
-        		 Intent myIntent = new Intent(this, ScreenIndexTestActivity.class);
+
+    		 Intent myIntent;
+        	 if (moved == false)
+        	 if ((x_diff) > 100 && (y_diff) < -100)
+        	 {
+        		 myIntent = new Intent(this, ScreenIndexTestActivity.class);
         		 startActivity(myIntent);
-        	 //}
-        	 //else if (Math.abs(x_diff) > 1000 || Math.abs(y_diff) > 1000)
-        	// {
-        	//	 Intent recordIntent = new Intent(this, PianoActivity.class);
-        	//	 startActivity(recordIntent);
-        	// }
+        	 }
+        	 else if ((x_diff) > 100 && (y_diff) > 100)
+        	 {
+        		 myIntent = new Intent(this, PianoActivity.class);
+        		 startActivity(myIntent);
+        	 }else if ((x_diff) < -100 && (y_diff) < -100)
+        	 {
+        		 myIntent = new Intent(this, GuitarActivity.class);
+        		 startActivity(myIntent);
+        	 }else if ((x_diff) < -100 && (y_diff) > 100)
+        	 {
+        		 myIntent = new Intent(this, BassActivity.class);
+        		 startActivity(myIntent);
+        	 }
           }
          
          return true;
@@ -216,7 +226,7 @@ public class OpenGLCubeActivity extends Activity {
 						gl.glLoadIdentity();
 						gl.glFrustumf(-ratio, ratio, -1, 1, 1, 10);
 					}
-					drawFrame(gl, 500, 500);
+					drawFrame(gl, 1280, 700);
 					egl.eglSwapBuffers(dpy, surface);
 					if (egl.eglGetError() == EGL11.EGL_CONTEXT_LOST) {
 						Context c = getContext();

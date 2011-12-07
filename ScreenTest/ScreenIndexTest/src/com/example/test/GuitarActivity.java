@@ -12,6 +12,7 @@ import android.content.res.Resources;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.Point;
 import android.graphics.drawable.ShapeDrawable;
 import android.graphics.drawable.shapes.OvalShape;
 import android.media.AudioFormat;
@@ -26,7 +27,12 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
+import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.CompoundButton.OnCheckedChangeListener;
+import android.widget.LinearLayout.LayoutParams;
 
 
 public class GuitarActivity extends Activity {
@@ -42,7 +48,7 @@ public class GuitarActivity extends Activity {
 	public int width;
 	public int octaves = 2;
 	public static int x_segments = 12;
-	public static int y_segments = 7;
+	public static int y_segments = 6;
 	public static float[] x_lines = new float[(x_segments + 1) * 4];
 	public static float[] y_lines = new float[(y_segments + 1) * 4];
 
@@ -51,6 +57,7 @@ public class GuitarActivity extends Activity {
 	public double y_fraction;
 	double freq;
 	AudioSynthesisTask audioSynth;
+	AudioRecorder audioRecorder;
 	
 	
 
@@ -59,10 +66,36 @@ public class GuitarActivity extends Activity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         
-        
-        //setContentView(R.layout.main);
         this.cv = new CircleView(this, x,y);
-        this.setContentView(this.cv);
+        //this.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        this.cv = new CircleView(this, x,y);
+        this.audioRecorder = new AudioRecorder();
+           
+        // Build the layout
+        LinearLayout l1 = new LinearLayout(this);
+        l1.setOrientation(LinearLayout.VERTICAL);
+        l1.setLayoutParams(new LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.FILL_PARENT));
+        LinearLayout layout = (LinearLayout) View.inflate(this, R.layout.main_record, null);
+        l1.addView(layout);
+        l1.addView(this.cv);
+
+        // Set the content view.
+		this.setContentView(l1);
+
+		// Set the record button.
+		CheckBox cb = (CheckBox) findViewById(R.id.recordcbx);
+		cb.setOnCheckedChangeListener(new OnCheckedChangeListener() {
+			public void onCheckedChanged(CompoundButton buttonView,
+					boolean isChecked) {
+				if (buttonView.isChecked()) {
+					//AppLog.logString("Start Recording");
+					//audioRecorder.startRecording();
+				} else {
+					//AppLog.logString("Stop Recording");
+					//audioRecorder.stopRecording();
+				}
+			}
+		});
         
         tv = (TextView)findViewById(R.id.pitchIndex);
         
@@ -74,7 +107,7 @@ public class GuitarActivity extends Activity {
         Display d = getWindowManager().getDefaultDisplay(); 
         width = d.getWidth();           // gets maximum x value (1280 on galaxy tab)
         height = d.getHeight();          // gets maximum y value (800 on galaxy tab)
-    	
+    	height = height - 100;
         
         //lines = {0f, 0f, 0f, 800f};
         int j;
@@ -151,12 +184,12 @@ public class GuitarActivity extends Activity {
         // interested in events where the touch position changed.
 
     	x = e.getX();
-        y = e.getY();
+        y = e.getY() - 75;
         
         //int width;
     	//int height;
         
-        double f_start = 27.5 * Math.pow(2,baseFreqIndex);
+        double f_start = 82.4 * Math.pow(2,baseFreqIndex)  * Math.pow((4f/3f), Math.floor(y_fraction * y_segments));
         double f_final = f_start * 2;
         
         double x_fraction = x/width;
@@ -185,8 +218,10 @@ public class GuitarActivity extends Activity {
         	audioSynth.stopPlay();
           }
          
-        
-        this.setContentView(new CircleView(this, x, y));
+
+         cv.mySpritePos.x = Math.round(x);
+         cv.mySpritePos.y = Math.round(y);
+         cv.invalidate();
         
         return true;
     }
@@ -194,27 +229,22 @@ public class GuitarActivity extends Activity {
     
     
     private static class CircleView extends View {
-    	private  ShapeDrawable circle = new ShapeDrawable();
-    	private int left, top, right, bottom;
-    	private static final float width = 30;
-    	private static final float height = 30;
+    	private  ShapeDrawable sprite = new ShapeDrawable(new OvalShape());
+    	private int spriteWidth, spriteHeight = 50;
     	private Paint p;
+    	public Point mySpritePos = new Point(0, 0);
+
     	
     	public CircleView(Context context, float x, float y) {
     		super(context);
     		setFocusable(true);
-    		this.left = Math.round(x - width/2);
-    		this.top = Math.round(y - height/2);
-    		this.right = Math.round(x + width/2);
-    		this.bottom = Math.round(y + height/2);
-    		this.circle = new ShapeDrawable(new OvalShape());
-    		this.circle.getPaint().setColor(Color.CYAN);
+    		this.sprite.getPaint().setColor(Color.CYAN);
     	}
     	
     	@Override
-    	protected void onDraw(Canvas canvas) {
-    		circle.setBounds(left, top, right, bottom);
-    		this.circle.draw(canvas);
+    	protected void onDraw(Canvas canvas) {   		
+    		this.sprite.setBounds(mySpritePos.x - 25, mySpritePos.y - 25, mySpritePos.x + 25, mySpritePos.y + 25);
+    		this.sprite.draw(canvas);
 		     Paint p = new Paint();
     		     p.setColor(Color.BLUE);
     		     //canvas.drawLines(x_lines, p);
@@ -256,7 +286,7 @@ public class GuitarActivity extends Activity {
             //  / SAMPLE_RATE;
         	//  angular_frequency = (float) (2 * (float)freq)
             //  / SAMPLE_RATE;
-          	    
+          	    /*
           if ( y_fraction >= 0.5 ) {
         	  angular_frequency = (float) (2 * Math.PI) * (float)freq
         	              / SAMPLE_RATE;
@@ -266,14 +296,14 @@ public class GuitarActivity extends Activity {
               angle += angular_frequency;
         	}
           }
-              else{
+              else{*/
             	  angular_frequency = (float) (2 * (float)freq)
                           / SAMPLE_RATE;
               	for (int i = 0; i < buffer.length / 6; i++) {           	
               	  buffer[i] = (short) (Short.MAX_VALUE * ((float) Math
                     .floor(angle)) * 0.5);
                 angle += angular_frequency;
-              	}
+              	//}
             }
             audioTrack.write(buffer, 0, buffer.length / 6);
           }

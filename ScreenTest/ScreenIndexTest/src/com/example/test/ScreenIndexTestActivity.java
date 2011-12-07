@@ -73,7 +73,6 @@ public class ScreenIndexTestActivity extends Activity {
         super.onCreate(savedInstanceState);
         
         
-        //setContentView(R.layout.main);
         this.cv = new CircleView(this, x,y);
         this.requestWindowFeature(Window.FEATURE_NO_TITLE);
         this.cv = new CircleView(this, x,y);
@@ -97,10 +96,10 @@ public class ScreenIndexTestActivity extends Activity {
 					boolean isChecked) {
 				if (buttonView.isChecked()) {
 					//AppLog.logString("Start Recording");
-					 audioRecorder.startRecording();
+					//audioRecorder.startRecording();
 				} else {
 					//AppLog.logString("Stop Recording");
-					 audioRecorder.stopRecording();
+					//audioRecorder.stopRecording();
 				}
 			}
 		});

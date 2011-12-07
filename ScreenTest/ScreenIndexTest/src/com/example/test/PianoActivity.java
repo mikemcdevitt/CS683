@@ -1,7 +1,4 @@
-                                                                     
-                                                                     
-                                                                     
-                                             
+                                            
 package com.example.test;
 
 import android.app.Activity;
@@ -12,6 +9,7 @@ import android.content.res.Resources;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.Point;
 import android.graphics.drawable.ShapeDrawable;
 import android.graphics.drawable.shapes.OvalShape;
 import android.media.AudioFormat;
@@ -26,7 +24,13 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.Window;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
+import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.CompoundButton.OnCheckedChangeListener;
+import android.widget.LinearLayout.LayoutParams;
 
 
 public class PianoActivity extends Activity {
@@ -56,6 +60,7 @@ public class PianoActivity extends Activity {
 	AudioSynthesisTask audioSynth;
 	public static int octave;
 	public static int[] keyTranslation = {0, 2, 4, 5, 7, 9, 11};
+	AudioRecorder audioRecorder;
 	
 	
 
@@ -64,10 +69,36 @@ public class PianoActivity extends Activity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         
-        
-        //setContentView(R.layout.main);
         this.cv = new CircleView(this, x,y);
-        this.setContentView(this.cv);
+        //this.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        this.cv = new CircleView(this, x,y);
+        this.audioRecorder = new AudioRecorder();
+           
+        // Build the layout
+        LinearLayout l1 = new LinearLayout(this);
+        l1.setOrientation(LinearLayout.VERTICAL);
+        l1.setLayoutParams(new LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.FILL_PARENT));
+        LinearLayout layout = (LinearLayout) View.inflate(this, R.layout.main_record, null);
+        l1.addView(layout);
+        l1.addView(this.cv);
+
+        // Set the content view.
+		this.setContentView(l1);
+
+		// Set the record button.
+		CheckBox cb = (CheckBox) findViewById(R.id.recordcbx);
+		cb.setOnCheckedChangeListener(new OnCheckedChangeListener() {
+			public void onCheckedChanged(CompoundButton buttonView,
+					boolean isChecked) {
+				if (buttonView.isChecked()) {
+					//AppLog.logString("Start Recording");
+					//audioRecorder.startRecording();
+				} else {
+					//AppLog.logString("Stop Recording");
+					//audioRecorder.stopRecording();
+				}
+			}
+		});
         
         tv = (TextView)findViewById(R.id.pitchIndex);
         
@@ -208,7 +239,8 @@ public class PianoActivity extends Activity {
         
         //double freq = f_start + x_fraction*(f_final - f_start);
         
-        double freq = pitches[key];
+        double freq = pitches[key] * Math.pow(2, baseFreqIndex);
+        		//2,baseFreqIndex);
        
         //TextView tvX = (TextView)findViewById(R.id.xIndex); 
         //TextView tvY = (TextView)findViewById(R.id.yIndex); 
@@ -231,7 +263,10 @@ public class PianoActivity extends Activity {
           }
          
         
-        this.setContentView(new CircleView(this, x, y));
+        //this.setContentView(new CircleView(this, x, y));
+        cv.mySpritePos.x = Math.round(x);
+        cv.mySpritePos.y = Math.round(y);
+        cv.invalidate();
         
         return true;
     }
@@ -239,27 +274,22 @@ public class PianoActivity extends Activity {
     
     
     private static class CircleView extends View {
-    	private  ShapeDrawable circle = new ShapeDrawable();
-    	private int left, top, right, bottom;
-    	private static final float width = 30;
-    	private static final float height = 30;
+    	private  ShapeDrawable sprite = new ShapeDrawable(new OvalShape());
+    	private int spriteWidth, spriteHeight = 50;
     	private Paint p;
+    	public Point mySpritePos = new Point(0, 0);
+
     	
     	public CircleView(Context context, float x, float y) {
     		super(context);
     		setFocusable(true);
-    		this.left = Math.round(x - width/2);
-    		this.top = Math.round(y - height/2);
-    		this.right = Math.round(x + width/2);
-    		this.bottom = Math.round(y + height/2);
-    		this.circle = new ShapeDrawable(new OvalShape());
-    		this.circle.getPaint().setColor(Color.CYAN);
+    		this.sprite.getPaint().setColor(Color.CYAN);
     	}
     	
     	@Override
-    	protected void onDraw(Canvas canvas) {
-    		circle.setBounds(left, top, right, bottom);
-    		this.circle.draw(canvas);
+    	protected void onDraw(Canvas canvas) {   		
+    		this.sprite.setBounds(mySpritePos.x - 25, mySpritePos.y - 25, mySpritePos.x + 25, mySpritePos.y + 25);
+    		this.sprite.draw(canvas);
 		     Paint p = new Paint();
     		     p.setColor(Color.BLUE);
     		     canvas.drawLines(x_lines, p);
