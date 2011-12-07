@@ -91,20 +91,20 @@ public class OpenGLCubeActivity extends Activity {
 
     		 Intent myIntent;
         	 if (moved == false)
-        	 if ((x_diff) > 100 && (y_diff) < -100)
+        	 if ((x_diff) > 100 && (y_diff) < -100)  			// to the right and up
         	 {
-        		 myIntent = new Intent(this, ScreenIndexTestActivity.class);
+        		 myIntent = new Intent(this, DisplayLines.class);
         		 startActivity(myIntent);
         	 }
-        	 else if ((x_diff) > 100 && (y_diff) > 100)
+        	 else if ((x_diff) > 100 && (y_diff) > 100) 		// to the right and down
         	 {
         		 myIntent = new Intent(this, PianoActivity.class);
         		 startActivity(myIntent);
-        	 }else if ((x_diff) < -100 && (y_diff) < -100)
+        	 }else if ((x_diff) < -100 && (y_diff) < -100) 		// to the left and up
         	 {
         		 myIntent = new Intent(this, GuitarActivity.class);
         		 startActivity(myIntent);
-        	 }else if ((x_diff) < -100 && (y_diff) > 100)
+        	 }else if ((x_diff) < -100 && (y_diff) > 100)		// to the left and down
         	 {
         		 myIntent = new Intent(this, BassActivity.class);
         		 startActivity(myIntent);

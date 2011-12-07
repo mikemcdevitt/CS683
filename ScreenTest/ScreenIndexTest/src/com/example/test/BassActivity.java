@@ -7,8 +7,6 @@ package com.example.test;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.content.res.Resources;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -20,7 +18,6 @@ import android.media.AudioManager;
 import android.media.AudioTrack;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.view.Display;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -37,7 +34,7 @@ import android.widget.LinearLayout.LayoutParams;
 
 public class BassActivity extends Activity {
     private CircleView cv = null;
-    private Resources resources;
+    //private Resources resources;
     float x = 0;
     float y = 0;
 	//private static final float width = 30;
@@ -101,7 +98,7 @@ public class BassActivity extends Activity {
 			}
 		});
         
-        resources = this.getResources();
+        //resources = this.getResources();
         setOptionText();    
         
 
@@ -135,7 +132,6 @@ public class BassActivity extends Activity {
         	string_lines[j + 2] = width;
         	string_lines[j + 3] = (height / y_segments) * i - (height / y_segments / 2);
         }
-        int bkLineIndex;
         j = y_segments * 4;
         y_lines[0] = 0;
         y_lines[1] = 0;
@@ -193,7 +189,6 @@ public class BassActivity extends Activity {
     }
     
     private void setOptionText() {
-    	SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
     	//String option = prefs.getString(resources.getString(R.string.start_list), resources.getString(R.string.default_start_value_preference));
     	
     	baseFreqIndex = 2;
@@ -256,7 +251,7 @@ public class BassActivity extends Activity {
     
     private static class CircleView extends View {
     	private  ShapeDrawable sprite = new ShapeDrawable(new OvalShape());
-    	private int spriteWidth, spriteHeight = 50;
+    	//private int spriteWidth, spriteHeight = 50;
     	private Paint p;
     	public Point mySpritePos = new Point(0, 0);
 
@@ -271,7 +266,7 @@ public class BassActivity extends Activity {
     	protected void onDraw(Canvas canvas) {   		
     		this.sprite.setBounds(mySpritePos.x - 25, mySpritePos.y - 25, mySpritePos.x + 25, mySpritePos.y + 25);
     		this.sprite.draw(canvas);
-		     Paint p = new Paint();
+		     p = new Paint();
     		     p.setColor(Color.BLUE);
     		     //canvas.drawLines(x_lines, p);
     		     //canvas.drawLines(bk_lines, p);
@@ -297,7 +292,6 @@ public class BassActivity extends Activity {
     private class AudioSynthesisTask extends AsyncTask<Void, Void, Void> {
     	AudioTrack audioTrack;
     	boolean keepGoing = true;
-    	//double freq = 440.0;
     	
     	
         @Override

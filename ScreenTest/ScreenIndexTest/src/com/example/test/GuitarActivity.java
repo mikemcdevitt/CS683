@@ -27,16 +27,15 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.Window;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
-import android.widget.LinearLayout;
-import android.widget.TextView;
 import android.widget.CompoundButton.OnCheckedChangeListener;
+import android.widget.LinearLayout;
 import android.widget.LinearLayout.LayoutParams;
 
 
 public class GuitarActivity extends Activity {
-    private TextView tv = null;
     private CircleView cv = null;
     private Resources resources;
     float x = 0;
@@ -46,11 +45,16 @@ public class GuitarActivity extends Activity {
 	private int baseFreqIndex;
 	public int height;
 	public int width;
-	public int octaves = 2;
+	public static int octaves = 1;
 	public static int x_segments = 12;
 	public static int y_segments = 6;
 	public static float[] x_lines = new float[(x_segments + 1) * 4];
 	public static float[] y_lines = new float[(y_segments + 1) * 4];
+	public static float[] string_lines = new float[(y_segments + 1) * 4];
+	public static float[] fret_lines = new float[(x_segments + 1) * 4];
+	public static double baseFreq = 82.4;
+	public static float[] fretDotsX = new float[octaves * 5];
+	
 
 
     public static float[] bk_lines = new float[96];
@@ -67,7 +71,7 @@ public class GuitarActivity extends Activity {
         super.onCreate(savedInstanceState);
         
         this.cv = new CircleView(this, x,y);
-        //this.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        this.requestWindowFeature(Window.FEATURE_NO_TITLE);
         this.cv = new CircleView(this, x,y);
         this.audioRecorder = new AudioRecorder();
            
@@ -97,8 +101,6 @@ public class GuitarActivity extends Activity {
 			}
 		});
         
-        tv = (TextView)findViewById(R.id.pitchIndex);
-        
         resources = this.getResources();
         setOptionText();    
         
@@ -107,26 +109,43 @@ public class GuitarActivity extends Activity {
         Display d = getWindowManager().getDefaultDisplay(); 
         width = d.getWidth();           // gets maximum x value (1280 on galaxy tab)
         height = d.getHeight();          // gets maximum y value (800 on galaxy tab)
-    	height = height - 100;
+        height = height - 100;
+    	
         
         //lines = {0f, 0f, 0f, 800f};
         int j;
+        int i = 0;
         
-        for (int i = 0; i <= y_segments; i++)
+        for (i = 0; i <= (x_segments * 4); i = i + 4)
+        {
+        	fret_lines[i] = width / x_segments * i / 4;
+   			fret_lines[i + 1] = 0;
+        	fret_lines[i + 2] = width / x_segments * i / 4;
+        	fret_lines[i + 3] = height;
+        }	
+        
+        	
+        
+        
+        for (i = 1; i <= y_segments; i++)
         {
         	j = (i * 4);
-        	y_lines[j] = 0;
-        	y_lines[j + 1] = (height / y_segments) * i;
-        	y_lines[j + 2] = width;
-        	y_lines[j + 3] = (height / y_segments) * i;
+        	string_lines[j] = 0;
+        	string_lines[j + 1] = (height / y_segments) * i - (height / y_segments / 2);
+        	string_lines[j + 2] = width;
+        	string_lines[j + 3] = (height / y_segments) * i - (height / y_segments / 2);
         }
         int bkLineIndex;
         j = y_segments * 4;
-        y_lines[j] = 0;
-        y_lines[j + 1] = height - 1;
-        y_lines[j + 2] = width;
-        y_lines[j + 3] = height - 1;
-        for (int i = 0; i <= x_segments; i++)
+        y_lines[0] = 0;
+        y_lines[1] = 0;
+        y_lines[2] = width;
+        y_lines[3] = 0;
+        y_lines[4] = 0;
+        y_lines[5] = height - 1;
+        y_lines[6] = width;
+        y_lines[7] = height - 1;
+        for (i = 0; i <= x_segments; i++)
         {
         	
         	j = (i * 4);
@@ -140,6 +159,12 @@ public class GuitarActivity extends Activity {
         x_lines[j + 1] = 0;
         x_lines[j + 2] = width - 1;
         x_lines[j + 3] = height;
+        
+       fretDotsX[0] = width * (5f/24f);
+       fretDotsX[1] = width * (9f/24f);
+       fretDotsX[2] = width * (13f/24f);
+       fretDotsX[3] = width * (17f/24f);
+       fretDotsX[4] = width * (23f/24f);
        
         
     }
@@ -169,10 +194,9 @@ public class GuitarActivity extends Activity {
     
     private void setOptionText() {
     	SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
-    	String option = prefs.getString(resources.getString(R.string.start_list), resources.getString(R.string.default_start_value_preference));
+    	//String option = prefs.getString(resources.getString(R.string.start_list), resources.getString(R.string.default_start_value_preference));
     	
-    	String[] optionText = resources.getStringArray(R.array.start_list_options);
-    	baseFreqIndex = Integer.valueOf(option);
+    	baseFreqIndex = 1;
     	//tv.setText("preference for start is " + option + " (" + optionText[Integer.parseInt(option)] + ")" );
     }
     
@@ -184,19 +208,21 @@ public class GuitarActivity extends Activity {
         // interested in events where the touch position changed.
 
     	x = e.getX();
-        y = e.getY() - 75;
+        y = e.getY() - 10;
         
         //int width;
     	//int height;
+
+        y_fraction = y/height;
         
-        double f_start = 82.4 * Math.pow(2,baseFreqIndex)  * Math.pow((4f/3f), Math.floor(y_fraction * y_segments));
+        double f_start = baseFreq * Math.pow(2,baseFreqIndex) * Math.pow((4f/3f), Math.floor(y_fraction * 6));
+        		//Math.pow(4/3, Math.floor(y_fraction * 4));
         double f_final = f_start * 2;
         
         double x_fraction = x/width;
         //double y_fraction = y/height;
-        y_fraction = y/height;
         
-        double freq = f_start + x_fraction*(f_final - f_start);
+        double freq =  f_start - x_fraction*(f_start - f_final);
        
         //TextView tvX = (TextView)findViewById(R.id.xIndex); 
         //TextView tvY = (TextView)findViewById(R.id.yIndex); 
@@ -215,7 +241,7 @@ public class GuitarActivity extends Activity {
           } else if (e.getAction() == android.view.MotionEvent.ACTION_MOVE) {
         	  audioSynth.setFreq(freq);
           } else if (e.getAction() == android.view.MotionEvent.ACTION_UP) {
-        	audioSynth.stopPlay();
+        	audioSynth.stopPlay(); 
           }
          
 
@@ -251,13 +277,27 @@ public class GuitarActivity extends Activity {
     		     //canvas.drawLines(bk_lines, p);
     		     p.setColor(Color.YELLOW);
     		     canvas.drawLines(y_lines, p);
+
+    		     p.setColor(Color.WHITE);
+    		     canvas.drawLines(fret_lines, p);
+    		     
+    		     p.setColor(Color.GRAY);
+    		     //canvas.drawLines(y_lines, p);
+    		     canvas.drawLines(string_lines, p);
+    		     for (int i = 0; i < 4; i++){
+    		     canvas.drawCircle(fretDotsX[i], 350, 15, p);}
+
+    		     canvas.drawCircle(fretDotsX[4], 300, 15, p);
+    		     canvas.drawCircle(fretDotsX[4], 400, 15, p);
+    		     this.sprite.setBounds(mySpritePos.x - 25, mySpritePos.y - 25, mySpritePos.x + 25, mySpritePos.y + 25);
+    	    		this.sprite.draw(canvas);
     	}
     }
     
     private class AudioSynthesisTask extends AsyncTask<Void, Void, Void> {
     	AudioTrack audioTrack;
     	boolean keepGoing = true;
-    	double freq = 440.0;
+    	//double freq = 440.0;
     	
     	
         @Override
@@ -286,8 +326,8 @@ public class GuitarActivity extends Activity {
             //  / SAMPLE_RATE;
         	//  angular_frequency = (float) (2 * (float)freq)
             //  / SAMPLE_RATE;
-          	    /*
-          if ( y_fraction >= 0.5 ) {
+          	    
+          /*if ( y_fraction >= 0.5 ) {
         	  angular_frequency = (float) (2 * Math.PI) * (float)freq
         	              / SAMPLE_RATE;
         	for (int i = 0; i < buffer.length / 6; i++) {           	
@@ -297,6 +337,16 @@ public class GuitarActivity extends Activity {
         	}
           }
               else{*/
+        	  
+        //freq = freq * Math.pow(4/3, Math.floor(y_fraction * 4));
+        	  
+        	 /* if (y_fraction < 0.25)
+        			  baseFreq = 41.2 * Math.pow(1.3333333333, 3);
+        	  else if (y_fraction < 0.5)
+        			  baseFreq = 41.2 * Math.pow(1.3333333333, 2);
+        	  else if (y_fraction < 0.75)
+        			  baseFreq = 41.2 * 1.3333333333;
+        */
             	  angular_frequency = (float) (2 * (float)freq)
                           / SAMPLE_RATE;
               	for (int i = 0; i < buffer.length / 6; i++) {           	

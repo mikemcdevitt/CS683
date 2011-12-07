@@ -27,4 +27,32 @@
 	<item>5f</item>
 	<item>6f</item>
 </string-array>
+<integer-array name="learnSongString">
+	<item>1</item>
+	<item>1</item>
+	<item>1</item>
+	<item>1</item>
+	<item>3</item>
+	<item>3</item>
+	<item>2</item>
+	<item>2</item>
+	<item>2</item>
+	<item>2</item>
+	<item>3</item>
+	<item>3</item>
+	</integer-array>
+<integer-array name="learnSongFret">
+	<item>2</item>
+	<item>3</item>
+	<item>4</item>
+	<item>5</item>
+	<item>5</item>
+	<item>7</item>
+	<item>2</item>
+	<item>3</item>
+	<item>4</item>
+	<item>5</item>
+	<item>7</item>
+	<item>10</item>
+	</integer-array>
 </resources>

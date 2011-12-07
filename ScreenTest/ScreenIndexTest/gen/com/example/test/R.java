@@ -9,9 +9,11 @@ package com.example.test;
 
 public final class R {
     public static final class array {
-        public static final int base_frequencies=0x7f050004;
+        public static final int base_frequencies=0x7f050006;
+        public static final int learnSongFret=0x7f050004;
+        public static final int learnSongString=0x7f050003;
         public static final int linePoints=0x7f050002;
-        public static final int pitches=0x7f050003;
+        public static final int pitches=0x7f050005;
         public static final int start_list_options=0x7f050000;
         public static final int start_list_options_values=0x7f050001;
     }
