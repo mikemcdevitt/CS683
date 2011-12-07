@@ -45,14 +45,15 @@ public class BassActivity extends Activity {
 	private int baseFreqIndex;
 	public int height;
 	public int width;
-	public int octaves = 2;
+	public static int octaves = 1;
 	public static int x_segments = 12;
 	public static int y_segments = 4;
 	public static float[] x_lines = new float[(x_segments + 1) * 4];
 	public static float[] y_lines = new float[(y_segments + 1) * 4];
 	public static float[] string_lines = new float[(y_segments + 1) * 4];
-	public static float[] fret_lines = new float[11 * 4];
+	public static float[] fret_lines = new float[(x_segments + 1) * 4];
 	public static double baseFreq = 41.2;
+	public static float[] fretDotsX = new float[octaves * 5];
 	
 
 
@@ -115,10 +116,14 @@ public class BassActivity extends Activity {
         int j;
         int i = 0;
         
-        	fret_lines[i] = width / 2;
+        for (i = 0; i <= (x_segments * 4); i = i + 4)
+        {
+        	fret_lines[i] = width / x_segments * i / 4;
    			fret_lines[i + 1] = 0;
-        	fret_lines[i + 2] = width / 2;
+        	fret_lines[i + 2] = width / x_segments * i / 4;
         	fret_lines[i + 3] = height;
+        }	
+        
         	
         
         
@@ -154,6 +159,12 @@ public class BassActivity extends Activity {
         x_lines[j + 1] = 0;
         x_lines[j + 2] = width - 1;
         x_lines[j + 3] = height;
+        
+       fretDotsX[0] = width * (5f/24f);
+       fretDotsX[1] = width * (9f/24f);
+       fretDotsX[2] = width * (13f/24f);
+       fretDotsX[3] = width * (17f/24f);
+       fretDotsX[4] = width * (23f/24f);
        
         
     }
@@ -273,6 +284,13 @@ public class BassActivity extends Activity {
     		     p.setColor(Color.GRAY);
     		     //canvas.drawLines(y_lines, p);
     		     canvas.drawLines(string_lines, p);
+    		     for (int i = 0; i < 4; i++){
+    		     canvas.drawCircle(fretDotsX[i], 350, 15, p);}
+
+    		     canvas.drawCircle(fretDotsX[4], 300, 15, p);
+    		     canvas.drawCircle(fretDotsX[4], 400, 15, p);
+    		     this.sprite.setBounds(mySpritePos.x - 25, mySpritePos.y - 25, mySpritePos.x + 25, mySpritePos.y + 25);
+    	    		this.sprite.draw(canvas);
     	}
     }
     

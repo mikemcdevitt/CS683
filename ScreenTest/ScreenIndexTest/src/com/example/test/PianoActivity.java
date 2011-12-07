@@ -45,7 +45,7 @@ public class PianoActivity extends Activity {
 	public int height;
 	public int width;
 	public static int octaves = 9;
-	public static int x_segments = 21;
+	public static int x_segments = 17;
 	public static int y_segments = 1;
 	public static int blackKeys = 24;
 	public static float[] x_lines = new float[(x_segments + 1) * 4];
@@ -111,6 +111,8 @@ public class PianoActivity extends Activity {
         width = d.getWidth();           // gets maximum x value (1280 on galaxy tab)
         height = d.getHeight();          // gets maximum y value (800 on galaxy tab)
 
+        height -= 150;
+        
         int j;
         
         for (int i = 0; i < octaves; i++)
@@ -223,7 +225,7 @@ public class PianoActivity extends Activity {
         // interested in events where the touch position changed.
 
     	x = e.getX();
-        y = e.getY();
+        y = e.getY() - 50;
         
         //int width;
     	//int height;
@@ -348,7 +350,14 @@ public class PianoActivity extends Activity {
               	  buffer[i] = (short) (Short.MAX_VALUE * ((float) Math
                     .floor(angle)));
                 angle += angular_frequency;
-              	}
+              	}/*
+                angular_frequency = (float) (2 * (float)freq)
+                        / SAMPLE_RATE;
+            	for (int i = 0; i < buffer.length / 6; i++) {           	
+            	  buffer[i] = (short) (Short.MAX_VALUE * ((float) Math
+                  .floor(angle)));
+              angle += angular_frequency;
+            	}*/
             //}
             audioTrack.write(buffer, 0, buffer.length / 6);
           }
